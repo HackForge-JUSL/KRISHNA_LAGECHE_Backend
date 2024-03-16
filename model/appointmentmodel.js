@@ -1,27 +1,32 @@
 import mongoose from "mongoose";
 
 const appointmentSchema=mongoose.Schema({
-    user:{
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'User'
+        ref: 'user'
     },
-    doctor:{
+    doctor: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'Doctor'
+        ref: 'doctor'
     },
-    date:{
-        type: Date,
+    date: {
+        type: String,
         required: true,
     },
-    time:{
-        type: Date,
+    time: {
+        type: String,
         required: true,
+    },
+    status: {
+        type: String,
+        enum: ["pending", "completed"],
+        default: "pending"
     }
 })
 
 
-const Appointment= mongoose.model('token',appointmentSchema);
+const Appointment= mongoose.model('appointment',appointmentSchema);
 
 export default Appointment;

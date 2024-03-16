@@ -7,6 +7,7 @@ import { loginDoctor, signupDoctor, updateDoctor } from '../controllers/doctorCo
 import { authenticateToken } from '../middleware/jwtAuth.js';
 import { getAllDoctors, getDoctor } from '../controllers/doctorController.js';
 import { createPrescription, getAllPrescriptions, getPrescription} from '../controllers/prescriptionController.js'
+import { createAppointment, getAllAppointments, getAppointment } from '../controllers/appointmentController.js';
 
 const router=express.Router();
 
@@ -32,5 +33,10 @@ router.post('/verifyotp',verifyOTP);
 router.post('/prescription/create', authenticateToken, createPrescription);
 router.get('/prescription/all', authenticateToken, getAllPrescriptions);
 router.get('/prescription/:id', getPrescription);
+
+// appointment routes
+router.post('/appointment/create', authenticateToken, createAppointment);
+router.get('/appointment/all', authenticateToken, getAllAppointments);
+router.get('/appointment/:id', getAppointment);
 
 export default router;
