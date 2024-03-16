@@ -72,3 +72,22 @@ export const updateDoctor = async (req,res) => {
         return res.status(500).json({ msg: "Error while updating details of doctor" });
     }   
 }
+
+
+export const getAllDoctors = async (req,res) =>{
+    try {
+        const allDoctors = await Doctor.find({});
+        res.status(200).json(allDoctors);
+    } catch (error) {
+        return res.status(500).json({msg: "Error Getting All the Doctors"});
+    }
+}
+
+export const getDoctor = async (req,res) =>{
+    try {
+        const doctor = await Post.findById(req.params.id);
+        res.status(200).json(doctor);
+    } catch (error) {
+        res.status(500).json({msg: "Error Getting Doctor"});
+    }
+}

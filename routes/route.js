@@ -5,6 +5,7 @@ import {verifyOTP} from '../controllers/verifyOtpController.js'
 import { loginUser,signupUser, updateUser } from '../controllers/userController.js';
 import { loginDoctor, signupDoctor, updateDoctor } from '../controllers/doctorController.js';
 import { authenticateToken } from '../middleware/jwtAuth.js';
+import { getAllDoctors, getDoctor } from '../controllers/doctorController.js';
 
 const router=express.Router();
 
@@ -17,6 +18,10 @@ router.put('/user/update',authenticateToken, updateUser);
 router.post('/doctor/signup',signupDoctor);
 router.post('/doctor/login',loginDoctor);
 router.put('/doctor/update',authenticateToken, updateDoctor);
+
+//doctor get routes
+router.get('/doctor/all',getAllDoctors);
+router.get('/doctor/:id',authenticateToken,getDoctor);
 
 //otp routes
 router.post('/sendotp',sendOtp)
