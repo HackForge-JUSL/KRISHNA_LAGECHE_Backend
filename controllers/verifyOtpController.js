@@ -2,7 +2,7 @@ import Otpmodel from "../model/otpmodel.js";
 
 export const verifyOTP = async (req,res) =>{
     try {
-        let user = await Otpmodel.findOne({username: req.body.username});
+        let user = await Otpmodel.findOne({email: req.body.email});
         if(!user){
             return res.status(400).json({msg: "UserName is not Provided"});
         }

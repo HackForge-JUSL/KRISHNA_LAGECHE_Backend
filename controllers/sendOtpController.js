@@ -9,19 +9,19 @@ dotenv.config();
 export const sendOtp = async (req,res) =>{
 
     try {
-        if(!req.body.username){
+        if(!req.body.email){
             return res.status(400).json({ msg: "Email Not Defined" });
         }
 
         let otpValue= generateOTP();
         // console.log({otpValue});
 
-        let user = await Otpmodel.findOne({username: req.body.username});
+        let user = await Otpmodel.findOne({email: req.body.email});
         if(user){
             user.otpValue = otpValue;
             await user.save();
         }else{
-            const otpmodel= {otpValue, username: req.body.username};
+            const otpmodel= {otpValue, email: req.body.email};
             const newOTP =await new Otpmodel(otpmodel);
             await newOTP.save();
         }

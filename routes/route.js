@@ -5,7 +5,10 @@ import {verifyOTP} from '../controllers/verifyOtpController.js'
 
 const router=express.Router();
 
-router.post('/',sendOtp)
-router.post('/verify',verifyOTP);
+
+
+//otp routes
+router.post('/sendotp',sendOtp)
+router.post('/verifyotp',verifyOTP);
 
 export default router;
