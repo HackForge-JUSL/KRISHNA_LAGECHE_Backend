@@ -34,7 +34,7 @@ export const sendOtp = async (req,res) =>{
             },
             to: `${req.body.username}`, 
             subject: 'Your OTP for Signing Up to HeathCare',
-            text: `Your OTP for singing up to HeathCare is: ${otpValue}` //OTP message
+            text: `Your OTP for signing up to HeathCare is: ${otpValue}` //OTP message
         };
 
         sendMail(mailOptions);
