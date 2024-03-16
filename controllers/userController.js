@@ -57,3 +57,18 @@ export const loginUser = async (req,res) => {
         return res.status(500).json({ msg: "Error while login in user" });
     }   
 }
+
+//Update User
+export const updateUser = async (req,res) => {
+    try {
+        const data = req.body;
+        let user= await User.findOne({email: req.user.email});
+        if(!user){
+            return res.status(400).json({ msg: "Username does not match" });
+        }
+        await User.findOneAndUpdate({email: req.user.email}, {$set: data});
+        return res.status(200).json({ msg: "Details updated successfully" });
+    } catch (error) {
+        return res.status(500).json({ msg: "Error while updating details of user" });
+    } 
+}

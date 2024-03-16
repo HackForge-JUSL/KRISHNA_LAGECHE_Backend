@@ -40,20 +40,35 @@ export const loginDoctor = async (req,res) => {
     }
 
     try {
-        let match=await bcryptjs.compare(req.body.password,user.password);
+        let match=await bcryptjs.compare(req.body.password,doctor.password);
         if(match){
-            const accessToken=jwt.sign(user.toJSON(), process.env.ACCESS_SECRET_KEY, {expiresIn: '5d'});
-            const refreshToken=jwt.sign(user.toJSON(), process.env.REFRESH_SECRET_KEY);
+            const accessToken=jwt.sign(doctor.toJSON(), process.env.ACCESS_SECRET_KEY, {expiresIn: '5d'});
+            const refreshToken=jwt.sign(doctor.toJSON(), process.env.REFRESH_SECRET_KEY);
 
             const newToken=new Token({token: refreshToken});
             await newToken.save();
 
-            return res.status(200).json({accessToken:accessToken,refreshToken:refreshToken,name:user.name,email:user.email});
+            return res.status(200).json({accessToken:accessToken,refreshToken:refreshToken,name:doctor.name,email:doctor.email});
         }
         else{
             return res.status(400).json({ msg: "Password does not match" });
         }
     } catch (error) {
-        return res.status(500).json({ msg: "Error while login in user" });
+        return res.status(500).json({ msg: "Error while login in doctor" });
+    }   
+}
+
+//Update Doctor
+export const updateDoctor = async (req,res) => {
+    try {
+        const data = req.body;
+        let doctor= await Doctor.findOne({email: req.user.email});
+        if(!doctor){
+            return res.status(400).json({ msg: "Username does not match" });
+        }
+        await Doctor.findOneAndUpdate({email: req.user.email}, {$set: data});
+        return res.status(200).json({ msg: "Details updated successfully" });
+    } catch (error) {
+        return res.status(500).json({ msg: "Error while updating details of doctor" });
     }   
 }
