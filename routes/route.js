@@ -7,8 +7,8 @@ import { loginUser,signupUser } from '../controllers/userController.js';
 const router=express.Router();
 
 //user auth routes
-router.post('/signup',signupUser);
-router.post('/login',loginUser);
+router.post('/user/signup',signupUser);
+router.post('/user/login',loginUser);
 
 
 
