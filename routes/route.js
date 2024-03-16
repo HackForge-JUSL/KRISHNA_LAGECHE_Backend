@@ -6,6 +6,7 @@ import { loginUser,signupUser, updateUser } from '../controllers/userController.
 import { loginDoctor, signupDoctor, updateDoctor } from '../controllers/doctorController.js';
 import { authenticateToken } from '../middleware/jwtAuth.js';
 import { getAllDoctors, getDoctor } from '../controllers/doctorController.js';
+import { createPrescription, getAllPrescriptions, getPrescription} from '../controllers/prescriptionController.js'
 
 const router=express.Router();
 
@@ -26,5 +27,10 @@ router.get('/doctor/:id',authenticateToken,getDoctor);
 //otp routes
 router.post('/sendotp',sendOtp)
 router.post('/verifyotp',verifyOTP);
+
+// prescription routes
+router.post('/prescription/create', authenticateToken, createPrescription);
+router.get('/prescription/all', authenticateToken, getAllPrescriptions);
+router.get('/prescription/:id', getPrescription);
 
 export default router;
