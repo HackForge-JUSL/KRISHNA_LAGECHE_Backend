@@ -20,10 +20,14 @@ const doctorSchema= mongoose.Schema({
     },
     gender: {
         type: String,
-        default: "neither",
+        default: "others",
+    },
+    about: {
+        type: String,
+        default: "",
     },
     mobile: {
-        type: Number,
+        type: String,
         default: "",
     },
     address: {
@@ -35,11 +39,11 @@ const doctorSchema= mongoose.Schema({
         default: "",
     },
     experience: {
-        type: Number,
+        type: String,
         default: "",
     },
     fees: {
-        type: Number,
+        type: String,
         default: "",
     },
 });

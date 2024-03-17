@@ -7,7 +7,7 @@ import { loginDoctor, signupDoctor, updateDoctor } from '../controllers/doctorCo
 import { authenticateToken } from '../middleware/jwtAuth.js';
 import { getAllDoctors, getDoctor } from '../controllers/doctorController.js';
 import { createPrescription, getAllPrescriptions, getPrescription} from '../controllers/prescriptionController.js'
-import { createAppointment, getAllAppointments, getAppointment } from '../controllers/appointmentController.js';
+import { getCheckoutSession , getAllAppointments, getAppointment } from '../controllers/appointmentController.js';
 
 const router=express.Router();
 
@@ -35,8 +35,10 @@ router.get('/prescription/all', authenticateToken, getAllPrescriptions);
 router.get('/prescription/:id', getPrescription);
 
 // appointment routes
-router.post('/appointment/create', authenticateToken, createAppointment);
+router.post('/bookings/checkout-session/:doctorId', authenticateToken, getCheckoutSession);
 router.get('/appointment/all', authenticateToken, getAllAppointments);
 router.get('/appointment/:id', getAppointment);
+
+
 
 export default router;

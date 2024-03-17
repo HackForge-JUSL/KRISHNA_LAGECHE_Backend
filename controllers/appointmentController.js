@@ -1,37 +1,63 @@
 import dotenv from 'dotenv';
-import Appointment from '../model/appointmentmodel.js';
+import Appointment from '../model/appointmentmodel.js'
 import Doctor from '../model/doctormodel.js';
 import User from '../model/usermodel.js';
-
+import Stripe from "stripe";
 dotenv.config();
 
 // Create appointment
-export const createAppointment = async (req,res) =>{
+export const getCheckoutSession = async (req, res) => {
     try {
-        const user = await User.findOne({email: req.user.email});
-        if(!user) {
-            return res.status(400).json({ msg: "Only users can create appointment" });
-        } else {
-            const { doctorId, date, time } = req.body;
-    
-            if (!doctorId || !date || !time) {
-                return res.status(400).json({ msg: 'Missing required fields' });
-            }
+        const doctor = await Doctor.findById(req.params.doctorId);
+        const user = await User.findById(req.user._id);
+        
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+        
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+            mode: "payment",
+            success_url: `${process.env.CLIENT_SITE_URL}/checkout-success`,
+            cancel_url: `${req.protocol}://${req.get("host")}/doctor/${doctor.id}`,
+            customer_email: user.email,
+            client_reference_id: req.params.doctorId,
+            line_items: [
+                {
+                    price_data: {
+                        currency: "inr",
+                        unit_amount: doctor.fees * 100,
+                        product_data: {
+                            name: doctor.name,
+                            description: doctor.about || "My about",
+                            images: [doctor?.photo],
+                        },
+                    },
+                    quantity: 1,
+                },
+            ],
+            billing_address_collection: 'auto',
+        });
 
-            const doctor = await Doctor.findById({_id: doctorId});
+        const currentDate = new Date().toISOString().split('T')[0];
+        const currentTime = new Date().toISOString().split('T')[1].split('.')[0]; 
+        
+        const booking = new Appointment({
+            doctor: doctor._id,
+            user: user._id,
+            date: currentDate,
+            time: currentTime,
+            fees: doctor.fees,
+            session: session.id,
+            status: "pending",
+            isPaid: true
+        });
+        await booking.save();
     
-            if(!doctor) {
-                return res.status(400).json({ msg: "Doctor doesnot exist" });
-            } else {
-                const appointment = new Appointment({ user: user, doctor: doctor, date, time });
-                const savedAppointment = await appointment.save();
-                res.status(200).json({ msg: "Appointment created successfully", data: savedAppointment });
-            }
-        }
+        res.status(200).json({ success: true, message: "Successfully paid", session });
     } catch (error) {
-        return res.status(500).json({ msg: 'Error Creating Appointment' });
+        console.log(error);
+        res.status(500).json({ success: false, message: "Error creating checkout session" });
     }
-}
+};
 
 //Get all appointments
 export const getAllAppointments = async (req, res) => {
@@ -58,7 +84,6 @@ export const getAllAppointments = async (req, res) => {
         return res.status(500).json({ msg: "Error in fetching appointments" });
     }
 }
-
 //Get particular appointment
 export const getAppointment = async (req,res) => {
     try {
