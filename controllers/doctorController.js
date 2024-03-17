@@ -56,14 +56,12 @@ export const loginDoctor = async (req, res) => {
       const newToken = new Token({ token: refreshToken });
       await newToken.save();
 
-      return res
-        .status(200)
-        .json({
-          accessToken: accessToken,
-          refreshToken: refreshToken,
-          name: doctor.name,
-          email: doctor.email,
-        });
+      return res.status(200).json({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        name: doctor.name,
+        email: doctor.email,
+      });
     } else {
       return res.status(400).json({ msg: "Password does not match" });
     }
@@ -91,10 +89,23 @@ export const updateDoctor = async (req, res) => {
 
 export const getAllDoctors = async (req, res) => {
   try {
-    const allDoctors = await Doctor.find({}).select("-password");
-    res.status(200).json(allDoctors);
+    const { query } = req.query;
+    let doctors = null;
+    if (query) {
+      doctors = await Doctor.find({
+        $or: [
+          { name: { $regex: query, $options: "i" } },
+          { specialization: { $regex: query, $options: "i" } },
+        ],
+      }).select("-password");
+    } else {
+      doctors = await Doctor.find({}).select(
+        "-password"
+      );
+    }
+    res.status(200).json(doctors);
   } catch (error) {
-    return res.status(500).json({ msg: "Error Getting All the Doctors" });
+    res.status(404).json({ msg: "No Doctor" });
   }
 };
 
