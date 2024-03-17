@@ -1,6 +1,6 @@
 import  Otpmodel from "../model/otpmodel.js"
 import dotenv from 'dotenv';
-import {generateOTP} from "../utils/generateOTP.js"
+import {generateOTP} from "../utils/generateOtp.js"
 import { sendMail } from "../utils/sendMail.js";
 
 dotenv.config();
